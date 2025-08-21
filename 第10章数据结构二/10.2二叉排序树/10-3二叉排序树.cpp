@@ -1,35 +1,53 @@
-#include<iostream>
-
+#include <cstddef>
+#include <stdio.h>
 using namespace std;
-
-struct TreeNode {
+struct TreeNode{
     int data;
-    TreeNode *leftChild;
-    TreeNode *rightChild;
-    TreeNode(int num):data(num),leftChild(NULL),rightChild(NULL) {};
+    TreeNode* left;
+    TreeNode* right;
 };
-
-TreeNode* Insert(TreeNode*root,int data,int father) {
-    if(root==NULL) {
-        root=new TreeNode(data);
-        printf("%d\n",father);
-    } else if(data<root->data) {
-        root->leftChild=Insert(root->leftChild,data,root->data);
-    } else {
-        root->rightChild=Insert(root->rightChild,data,root->data);
+void InsertBST(TreeNode* &proot, int data){
+    TreeNode * pNew = new TreeNode;
+    pNew->data = data;
+    pNew->left = NULL;
+    pNew->right = NULL;
+    if(proot == NULL){
+        proot = pNew;
+        printf("-1\n");
     }
-    return root;
+    else{
+        TreeNode* pCur = proot;
+        TreeNode* pPre;
+        while(1){
+            if(pCur->data>data){
+                pPre = pCur;
+                pCur = pCur->left;
+                if (pCur ==NULL){
+                    pPre->left = pNew;
+                    printf("%d\n", pPre->data);
+                    break;
+                }
+            }
+            else{
+                pPre = pCur;
+                pCur = pCur->right;
+                if(pCur == NULL){
+                    pPre->right = pNew;
+                    printf("%d\n", pPre->data);
+                    break;
+                }
+            }
+        }
+    }
 }
-
 int main() {
     int n;
-    while(scanf("%d",&n)!=EOF) {
-        TreeNode *root=NULL;
-        for(int i=0; i<n; i++) {
-            int x;
-            scanf("%d",&x);
-            root=Insert(root,x,-1);
-        }
+    scanf("%d", &n);
+    TreeNode*proot = NULL;
+    for(int i = 0; i<n; ++i){
+        int data;
+        scanf("%d", &data);
+        InsertBST(proot, data);
     }
     return 0;
 }
