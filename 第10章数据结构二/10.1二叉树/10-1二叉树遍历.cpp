@@ -1,44 +1,42 @@
-#include<iostream>
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>  
+#include <queue>  // å¿…é¡»åŒ…å« queue å¤´æ–‡ä»¶
 using namespace std;
 
 struct TreeNode {
-    char data;
-    TreeNode *leftChild;
-    TreeNode *rightChild;
-    TreeNode(char c):data(c),leftChild(NULL),rightChild(NULL) {};
+	char data;
+	TreeNode* left;
+	TreeNode* right;
 };
-
-TreeNode *Build(int &position,string str) {
-    char c=str[position++];
-    if(c=='#') {
-        return NULL;
-    }
-    //´´½¨ÐÂ½Úµã
-    TreeNode *root=new TreeNode(c);
-    //´´½¨×ó×ÓÊ÷
-    root->leftChild=Build(position,str);
-    //´´½¨ÓÒ×ÓÊ÷
-    root->rightChild=Build(position,str);
-    return root;
+TreeNode* RecursiveBuildTree(int& i, char str[]) {
+	char c = str[i];
+	++i;
+	if (c == '#') {
+		return NULL;
+	}
+	else {
+		TreeNode* pNew = new TreeNode;
+		pNew->data = c;
+		pNew->left = RecursiveBuildTree(i, str);
+		pNew->right = RecursiveBuildTree(i, str);
+		return pNew;
+	}
 }
-
-void InOrder(TreeNode *root) {
-    if(root==NULL) {
-        return;
-    }
-    InOrder(root->leftChild);
-    printf("%c ",root->data);
-    InOrder(root->rightChild);
+void InOrder(TreeNode* proot) {
+	if (proot == NULL) {
+		return;
+	}
+	InOrder(proot->left);
+	printf("%c ", proot->data);
+	InOrder(proot->right);
 }
-
 int main() {
-    string str;
-    while(cin>>str) {
-        int position=0;
-        TreeNode *root=Build(position,str);
-        InOrder(root);
-        printf("\n");
-    }
-    return 0;
+	char str[1000];
+	while (scanf("%s",str) != EOF) {
+		int i = 0;
+		TreeNode* proot = RecursiveBuildTree(i, str);
+		InOrder(proot);
+		printf("\n");
+	}
+	return 0;
 }
-
