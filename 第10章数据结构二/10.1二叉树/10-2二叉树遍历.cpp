@@ -1,43 +1,71 @@
-#include<iostream>
+#include <stdio.h>
+#include <string>
 using namespace std;
 
 struct TreeNode {
     char data;
-    TreeNode *leftChild;
-    TreeNode *rightChild;
-    TreeNode(char c):data(c),leftChild(NULL),rightChild(NULL) {};
+    TreeNode* left;
+    TreeNode* right;
+    // 构造函数（可选）
+    TreeNode() : data(0), left(nullptr), right(nullptr) {}
 };
 
-TreeNode *Build(string str1,string str2) {
-    if(str1.size()==0) {
-        return NULL;
+TreeNode* Rebuild(string preOrder, string inOrder) {
+    if (preOrder.size() == 0) {
+        return nullptr;  // 或 NULL
     }
-    char c=str1[0];
-    //创建新节点
-    TreeNode *root = new TreeNode(c);
-    //寻找切分点
-    int pos=str2.find(c);
-    root->leftChild=Build(str1.substr(1,pos),str2.substr(0,pos));
-    root->rightChild=Build(str1.substr(pos+1),str2.substr(pos+1));
-    return root;
+
+    char rootData = preOrder[0];  // 根节点是先序的第一个字符
+    TreeNode* pNew = new TreeNode;
+    pNew->data = rootData;
+
+    // 在中序中找到根的位置
+    size_t pos = inOrder.find(rootData);
+    if (pos == string::npos) {
+        // 安全检查：没找到根（理论上不会发生）
+        delete pNew;
+        return nullptr;
+    }
+
+    // 分割中序：左子树 inOrder.substr(0, pos)，右子树 inOrder.substr(pos+1)
+    // 分割先序：跳过第一个（根），前 pos 个是左子树，剩下是右子树
+    string leftIn = inOrder.substr(0, pos);
+    string rightIn = inOrder.substr(pos + 1);
+
+    string leftPre = preOrder.substr(1, pos);           // 左子树长度 = pos
+    string rightPre = preOrder.substr(pos + 1);         // 剩下的部分
+
+    // 递归构建左右子树
+    pNew->left = Rebuild(leftPre, leftIn);
+    pNew->right = Rebuild(rightPre, rightIn);
+
+    return pNew;
 }
 
-void PostOrder(TreeNode *root) {
-    if(root==NULL) {
+void PostOrder(TreeNode* proot) {
+    if (proot == nullptr) {
         return;
     }
-    PostOrder(root->leftChild);
-    PostOrder(root->rightChild);
-    printf("%c",root->data);
+    PostOrder(proot->left);
+    PostOrder(proot->right);
+    printf("%c", proot->data);
 }
 
 int main() {
-    string str1,str2;
-    while(cin>>str1>>str2) {
-        TreeNode *root=Build(str1,str2);
-        PostOrder(root);
+    char preStr[30];
+    char inStr[30];
+
+    while (scanf("%s %s", preStr, inStr) != EOF) {
+        string preOrder(preStr);
+        string inOrder(inStr);
+
+        TreeNode* proot = Rebuild(preOrder, inOrder);
+        PostOrder(proot);
         printf("\n");
+
+        // 可选：释放内存（防止泄漏）
+        // FreeTree(proot);
     }
+
     return 0;
 }
-
