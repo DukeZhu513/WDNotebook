@@ -1,27 +1,25 @@
-#include<iostream>
-#include<queue>
-
+#include <stdio.h>
+#include <queue>
 using namespace std;
 
 int main() {
+    priority_queue<int> pqueue;
     int n;
-    while(scanf("%d",&n)!=EOF) {
-        priority_queue<int,vector<int>, greater<int>> myPriorityQueue;
-        for(int i=0; i<n; i++) {
-            int x;
-            scanf("%d",&x);
-            myPriorityQueue.push(x);
-        }
-        int answer=0;
-        while(myPriorityQueue.size()>1) {
-            int a=myPriorityQueue.top();
-            myPriorityQueue.pop();
-            int b=myPriorityQueue.top();
-            myPriorityQueue.pop();
-            answer+=a+b;
-            myPriorityQueue.push(a+b);
-        }
-        printf("%d\n",answer);
+    scanf("%d", &n);
+    for (int i = 0;i < n; ++i){
+        int leaf;
+        scanf("%d",&leaf);
+        pqueue.push(-1*leaf);
     }
+    int wpl = 0;
+    while(pqueue.size()>= 2){
+        int leaf1 = pqueue.top();
+        pqueue.pop();
+        int leaf2 = pqueue.top();
+        pqueue.pop();
+        wpl += leaf1 +leaf2;
+        pqueue.push(leaf1 + leaf2);
+    }
+    printf("%d\n", -1*wpl);
     return 0;
 }
